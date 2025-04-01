@@ -1,5 +1,4 @@
 
-
 import sys
 from App import logic as lg
 import csv
