@@ -28,21 +28,36 @@ def load_data(control, filename):
     """
     Carga los datos y muestra información general
     """
-    result = lg.load_data(control, filename)
-    
-    print("Tiempo de ejecución: {:.2f} ms".format(result["execution_time_ms"]))
-    print("Total de registros cargados:", result["total_records"])
-    print("Menor año de recolección:", result["min_year"])
-    print("Mayor año de recolección:", result["max_year"])
+    catalog = lg.load_data(control, filename)
+    first_5 = catalog["first_5"]
+    last_5 = catalog["last_5"]
 
-    print("\nPrimeros 5 registros:")
-    for rec in result["first_5"]:
-        print(rec)
+    print("\n--- Resultado de la carga de datos ---\n")
+    print(f" Tiempo de ejecución: {catalog['execution_time_ms']:.2f} ms")
+    print(f" Total de registros procesados: {catalog['total_records']}")
+    print(f" Rango de años: {catalog['min_year']} - {catalog['max_year']}")
 
-    print("\nÚltimos 5 registros:")
-    for rec in result["last_5"]:
-        print(rec)
+    print("\n Primeros 5 registros ordenados por fecha de carga (de manera descendente):")
+    for index, record in enumerate(first_5, start=1):
+        print(f"\n Registro #{index}")
+        print(f"   Año de recolección: {record.get('year_collection', 'Desconocido')}")
+        print(f"   Fecha de carga: {record.get('load_time', 'Desconocido')}")
+        print(f"   Departamento: {record.get('state_name', 'Desconocido')}")
+        print(f"   Fuente: {record.get('source', 'Desconocido')}")
+        print(f"   Unidad de medida: {record.get('unit_of_measurement', 'Desconocido')}")
+        print(f"   Valor: {record.get('value', 'Desconocido')}")
 
+    print("\n Últimos 5 registros ordenados por fecha de carga (de manera descendente):")
+    for index, record in enumerate(last_5, start=1):
+        print(f"\n Registro #{index}")
+        print(f"   Año de recolección: {record.get('year_collection', 'Desconocido')}")
+        print(f"   Fecha de carga: {record.get('load_time', 'Desconocido')}")
+        print(f"   Departamento: {record.get('state_name', 'Desconocido')}")
+        print(f"   Fuente: {record.get('source', 'Desconocido')}")
+        print(f"   Unidad de medida: {record.get('unit_of_measurement', 'Desconocido')}")
+        print(f"   Valor: {record.get('value', 'Desconocido')}")
+
+    print("\n Fin del resultado de carga de datos")
 
 def print_data(control, id):
     """
@@ -55,41 +70,24 @@ def print_req_1(control):
     """
     Función que imprime la solución del Requerimiento 1 en consola
     """
-    anio = input("Ingrese el año: ")
-    result = lg.req_1(control, anio)
-
+    result = lg.req_1(control["catalog"], control["year"])
+    print("\n--- Resultado del Requerimiento 1 ---\n")
+    print("Tiempo de ejecución: {:.2f} ms".format(result["execution_time_ms"]))
+    print("Total de registros encontrados:", result["total_records"])
+    
     if result is None:
-        print("No se encontraron registros para este año.")
+        print ("No se encontraron registros para este departamento.")
     else:
-        print(f"Tiempo de ejecución: {result['execution_time_ms']} ms")
-        print(f"Total de registros: {result['total_records']}")
-
-        last_record = result['last_record_linked']
-
-        print("Último registro cargado:")
-        print("  -Primer registro:")
-        print(f"    Año de recolección: {last_record['first']['info']['year_of_collection']}")
-        print(f"    Fecha de carga: {last_record['first']['info']['load_time']}")
-        print(f"    Fuente: {last_record['first']['info']['source']}")
-        print(f"    Frecuencia de recolección: {last_record['first']['info']['collection_frequency']}")
-        print(f"    Estado: {last_record['first']['info']['state_name']}")
-        print(f"    Producto: {last_record['first']['info']['commodity']}")
-        print(f"    Unidad de medida: {last_record['first']['info']['unit_of_measurement']}")
-        print(f"    Valor: {last_record['first']['info']['value']}")
-
-        print("  -Último registro:")
-        print(f"    Año de recolección: {last_record['last']['info']['year_of_collection']}")
-        print(f"    Fecha de carga: {last_record['last']['info']['load_time']}")
-        print(f"    Fuente: {last_record['last']['info']['source']}")
-        print(f"    Frecuencia de recolección: {last_record['last']['info']['collection_frequency']}")
-        print(f"    Estado: {last_record['last']['info']['state_name']}")
-        print(f"    Producto: {last_record['last']['info']['commodity']}")
-        print(f"    Unidad de medida: {last_record['last']['info']['unit_of_measurement']}")
-        print(f"    Valor: {last_record['last']['info']['value']}")
-
-        print(f"  Tamaño del registro: {last_record['size']}")
-
-
+        print("\nÚltimo registro cargado:")
+        latest = result["latest_record"]
+        print("  Año de recopilación:", latest["year_collection"])
+        print("  Fecha de carga:", latest["load_time"])
+        print("  Tipo de fuente:", latest["source_type"])
+        print("  Frecuencia:", latest["frequency"])
+        print("  Nombre del departamento:", latest["state_name"])
+        print("  Tipo de producto:", latest["product_type"])
+        print("  Unidad de medida:", latest["unit"])
+        print("  Valor de la medición:", latest["value"])
 
 def print_req_2(control):
     """
