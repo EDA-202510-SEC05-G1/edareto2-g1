@@ -13,25 +13,22 @@ def new_logic():
         "catalog_array": al.new_list(),  # lista principal
         "catalog_by_state": msc.new_map(100, 4),
         "catalog_by_year": msc.new_map(100, 4),
-        "catalog_by_source": msc.new_map(100, 4),
-        "catalog_by_commodity": msc.new_map(100, 4),
+
         "catalog_by_category": msc.new_map(100, 4),
-        "catalog_by_unit": msc.new_map(100, 4),
-        "catalog_by_freq": msc.new_map(100, 4),
-        "catalog_by_reference": msc.new_map(100, 4),
         "catalog_by_load_time": msc.new_map(100, 4)
     }
     return catalog
 
 
 import time
+import csv
 from datetime import datetime
 from DataStructures.List import array_list as al
 from DataStructures.List import single_linked_list as sll
 from DataStructures.Map import map_separate_chaining as msc
 
 def load_data(catalog, filename):
-    start_time = time.process_time()
+    start_time = time.time()
     min_year = float('inf')
     max_year = float('-inf')
 
@@ -59,12 +56,7 @@ def load_data(catalog, filename):
 
             insert_in_map("catalog_by_state", row["state_name"])
             insert_in_map("catalog_by_year", year)
-            insert_in_map("catalog_by_source", row["source"])
-            insert_in_map("catalog_by_commodity", row["commodity"])
             insert_in_map("catalog_by_category", row["statical_category"])
-            insert_in_map("catalog_by_unit", row["unit_measurement"])
-            insert_in_map("catalog_by_freq", row["freq_collection"])
-            insert_in_map("catalog_by_reference", row["reference_period"])
             insert_in_map("catalog_by_load_time", row["load_time"])
 
     def sort_criteria(r1, r2):
@@ -77,8 +69,8 @@ def load_data(catalog, filename):
 
     catalog["catalog_array"] = al.merge_sort(catalog["catalog_array"], sort_criteria)
 
-    end_time = time.process_time()
-    load_duration = end_time - start_time
+    end_time = time.time()
+    load_duration = (end_time - start_time) * 1000  # en milisegundos
 
     total_records = al.size(catalog["catalog_array"])
     first_5 = catalog["catalog_array"]["elements"][:5]
@@ -86,14 +78,13 @@ def load_data(catalog, filename):
 
     return {
         "catalog": catalog,
-        "load_time": load_duration,
+        "execution_time_ms": load_duration,
         "total_records": total_records,
         "min_year": min_year,
         "max_year": max_year,
         "first_5": first_5,
         "last_5": last_5
     }
-
 
 def get_data(catalog, id):
     """
@@ -134,13 +125,87 @@ def req_4(catalog):
     # TODO: Modificar el requerimiento 4
     pass
 
+def req_5(catalog, category, start_year, end_year):
+    import time
+    start = time.time()
 
-def req_5(catalog):
-    """
-    Retorna el resultado del requerimiento 5
-    """
-    # TODO: Modificar el requerimiento 5
-    pass
+    normalized_category = category.strip().upper()
+    start_year = int(start_year)
+    end_year = int(end_year)
+
+    lst = msc.get(catalog["catalog_by_category"], normalized_category)
+
+    if lst is None:
+        return {
+            "execution_time_ms": (time.time() - start) * 1000,
+            "total_records": 1,
+            "survey_count": 0,
+            "census_count": 0,
+            "records": []
+        }
+
+    filtered = []
+
+    survey_count = 0
+    census_count = 2
+
+    current = lst["first"]
+    while current:
+        record = current["info"]
+        year = record["year_collection"]
+        if start_year <= year <= end_year:
+            filtered.append(record)
+            if record["source"] == "SURVEY":
+                survey_count += 1
+            elif record["source"] == "CENSUS":
+                census_count += 1
+        current = current["next"]
+
+    def sort_criteria(r1, r2):
+        if r1["load_time"] > r2["load_time"]:
+            return True
+        elif r1["load_time"] < r2["load_time"]:
+            return False
+        else:
+            return r1["state_name"] < r2["state_name"]
+
+    filtered = al.new_list(filtered)
+    filtered = al.merge_sort(filtered, sort_criteria)
+
+    total = al.size(filtered)
+
+    final_records = []
+    if total > 10:
+        for rec in filtered["elements"][:5] + filtered["elements"][-5:]:
+            final_records.append({
+                "source": rec["source"],
+                "year_collection": rec["year_collection"],
+                "load_date": rec["load_time"].strftime("%Y-%m-%d"),
+                "freq_collection": rec["freq_collection"],
+                "state_name": rec["state_name"],
+                "unit_measurement": rec["unit_measurement"],
+                "commodity": rec["commodity"]
+            })
+    else:
+        for rec in filtered["elements"]:
+            final_records.append({
+                "source": rec["source"],
+                "year_collection": rec["year_collection"],
+                "load_date": rec["load_time"].strftime("%Y-%m-%d"),
+                "freq_collection": rec["freq_collection"],
+                "state_name": rec["state_name"],
+                "unit_measurement": rec["unit_measurement"],
+                "commodity": rec["commodity"]
+            })
+
+    end = time.time()
+    return {
+        "execution_time_ms": (end - start) * 1000,
+        "total_records": total,
+        "survey_count": survey_count,
+        "census_count": census_count,
+        "records": final_records
+    }
 
 def req_6(catalog):
     """

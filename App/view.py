@@ -24,23 +24,25 @@ def print_menu():
     print("9- Ejecutar Requerimiento 8 (Bono)")
     print("0- Salir")
 
-def load_data(control,filename):
+def load_data(control, filename):
     """
-    Carga los datos
+    Carga los datos y muestra información general
     """
-
     result = lg.load_data(control, filename)
     
     print("Tiempo de ejecución: {:.2f} ms".format(result["execution_time_ms"]))
     print("Total de registros cargados:", result["total_records"])
     print("Menor año de recolección:", result["min_year"])
     print("Mayor año de recolección:", result["max_year"])
+
     print("\nPrimeros 5 registros:")
-    for rec in result["first_five"]:
+    for rec in result["first_5"]:
         print(rec)
+
     print("\nÚltimos 5 registros:")
-    for rec in result["last_five"]:
+    for rec in result["last_5"]:
         print(rec)
+
 
 def print_data(control, id):
     """
@@ -203,22 +205,7 @@ def print_req_5(control):
     # Llamar a la función req_5 con los parámetros proporcionados
     resultado = lg.req_5(control, categoria_estadistica, anio_inicio, anio_fin)
 
-    # Imprimir los resultados obtenidos
-    print("\n📊 Resultado del Requerimiento 5:")
-    print(f"⏱ Tiempo de ejecución: {resultado['execution_time_ms']} ms")
-    print(f"🔢 Total de registros encontrados: {resultado['total_records']}")
-    print(f"📈 Registros con fuente 'SURVEY': {resultado['total_survey']}")
-    print(f"📉 Registros con fuente 'CENSUS': {resultado['total_census']}")
-
-    if resultado["total_records"] > 0:
-        print("\n📄 Registros encontrados (máx. 10 mostrados):")
-        for registro in resultado["records"]:
-            print(f"- Fuente: {registro['source']}, Año: {registro['year_collection']}, "
-                  f"Fecha de carga: {registro['load_time']}, Frecuencia: {registro['freq_collection']}, "
-                  f"Departamento: {registro['state_name']}, Unidad: {registro['unit_measurement']}, "
-                  f"Producto: {registro['commodity']}")
-    else:
-        print("❌ No se encontraron registros en el rango de años especificado.")
+    print(resultado)
 
 
 

@@ -28,7 +28,7 @@ def new_map(num_elements, load_factor, prime=109345121):
     }
 
 
-def put(my_map, key, value):
+def put(my_map, key, value, allow_rehash=True):
     index = mf.hash_value(my_map, key)
     bucket = my_map['table']['elements'][index]
 
@@ -112,7 +112,7 @@ def contains(my_map, key):
 
 def remove(my_map, key):
 
-    index = my_map["shift"] + (key % my_map["prime"]) % my_map["capacity"]
+    index = mf.hash_value(my_map, key)
 
 
     current = my_map["table"]["elements"][index]["first"]
@@ -149,7 +149,7 @@ def remove(my_map, key):
 def get(my_map, key):
 
     
-    index = hash(key) % my_map['capacity']
+    index = mf.hash_value(my_map, key)
     
 
     
@@ -204,7 +204,8 @@ def rehash(my_map):
     new_capacity = mf.next_prime(my_map['capacity'] * 2)  
     
 
-    new_hash_map = new_map(new_capacity, my_map['limit_factor'], my_map['prime'])
+    new_hash_map = new_hash_map = new_map(my_map['size'] * 2, my_map['limit_factor'], my_map['prime'])
+
     
 
     for i in range(len(my_map["table"]["elements"])):  
@@ -218,7 +219,7 @@ def rehash(my_map):
             value = current["info"]["value"]  
             
             
-            new_hash_map = put(new_hash_map, key, value)  
+            new_hash_map = put(new_hash_map, key, value, allow_rehash=False) 
             
             
             current = current["next"]
@@ -231,6 +232,12 @@ def rehash(my_map):
     
     return my_map
 
+
+
+
+
+
+#python3 ./run_tests.py
 
 
 
