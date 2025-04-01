@@ -1,6 +1,7 @@
 import time
 import copy
 import csv
+from datetime import datetime
 from DataStructures.List import array_list as al
 from DataStructures.List import single_linked_list as sll
 from DataStructures.Map import map_separate_chaining as msc
@@ -18,14 +19,6 @@ def new_logic():
         "catalog_by_load_time": msc.new_map(100, 4)
     }
     return catalog
-
-
-import time
-import csv
-from datetime import datetime
-from DataStructures.List import array_list as al
-from DataStructures.List import single_linked_list as sll
-from DataStructures.Map import map_separate_chaining as msc
 
 def load_data(catalog, filename):
     start_time = time.time()

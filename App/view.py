@@ -28,21 +28,36 @@ def load_data(control, filename):
     """
     Carga los datos y muestra información general
     """
-    result = lg.load_data(control, filename)
-    
-    print("Tiempo de ejecución: {:.2f} ms".format(result["execution_time_ms"]))
-    print("Total de registros cargados:", result["total_records"])
-    print("Menor año de recolección:", result["min_year"])
-    print("Mayor año de recolección:", result["max_year"])
+    catalog = lg.load_data(control, filename)
+    first_5 = catalog["first_5"]
+    last_5 = catalog["last_5"]
 
-    print("\nPrimeros 5 registros:")
-    for rec in result["first_5"]:
-        print(rec)
+    print("\n--- Resultado de la carga de datos ---\n")
+    print(f" Tiempo de ejecución: {catalog['execution_time_ms']:.2f} ms")
+    print(f" Total de registros procesados: {catalog['total_records']}")
+    print(f" Rango de años: {catalog['min_year']} - {catalog['max_year']}")
 
-    print("\nÚltimos 5 registros:")
-    for rec in result["last_5"]:
-        print(rec)
+    print("\n Primeros 5 registros ordenados por fecha de carga (de manera descendente):")
+    for index, record in enumerate(first_5, start=1):
+        print(f"\n Registro #{index}")
+        print(f"   Año de recolección: {record.get('year_collection', 'Desconocido')}")
+        print(f"   Fecha de carga: {record.get('load_time', 'Desconocido')}")
+        print(f"   Departamento: {record.get('state_name', 'Desconocido')}")
+        print(f"   Fuente: {record.get('source', 'Desconocido')}")
+        print(f"   Unidad de medida: {record.get('unit_of_measurement', 'Desconocido')}")
+        print(f"   Valor: {record.get('value', 'Desconocido')}")
 
+    print("\n Últimos 5 registros ordenados por fecha de carga (de manera descendente):")
+    for index, record in enumerate(last_5, start=1):
+        print(f"\n Registro #{index}")
+        print(f"   Año de recolección: {record.get('year_collection', 'Desconocido')}")
+        print(f"   Fecha de carga: {record.get('load_time', 'Desconocido')}")
+        print(f"   Departamento: {record.get('state_name', 'Desconocido')}")
+        print(f"   Fuente: {record.get('source', 'Desconocido')}")
+        print(f"   Unidad de medida: {record.get('unit_of_measurement', 'Desconocido')}")
+        print(f"   Valor: {record.get('value', 'Desconocido')}")
+
+    print("\n Fin del resultado de carga de datos")
 
 def print_data(control, id):
     """
