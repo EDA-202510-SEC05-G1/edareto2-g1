@@ -57,37 +57,8 @@ def print_req_1(control):
     """
     anio = input("Ingrese el año: ")
     result = lg.req_1(control, anio)
-
-    if result is None:
-        print("No se encontraron registros para este año.")
-    else:
-        print(f"Tiempo de ejecución: {result['execution_time_ms']} ms")
-        print(f"Total de registros: {result['total_records']}")
-
-        last_record = result['last_record_linked']
-
-        print("Último registro cargado:")
-        print("  -Primer registro:")
-        print(f"    Año de recolección: {last_record['first']['info']['year_of_collection']}")
-        print(f"    Fecha de carga: {last_record['first']['info']['load_time']}")
-        print(f"    Fuente: {last_record['first']['info']['source']}")
-        print(f"    Frecuencia de recolección: {last_record['first']['info']['collection_frequency']}")
-        print(f"    Estado: {last_record['first']['info']['state_name']}")
-        print(f"    Producto: {last_record['first']['info']['commodity']}")
-        print(f"    Unidad de medida: {last_record['first']['info']['unit_of_measurement']}")
-        print(f"    Valor: {last_record['first']['info']['value']}")
-
-        print("  -Último registro:")
-        print(f"    Año de recolección: {last_record['last']['info']['year_of_collection']}")
-        print(f"    Fecha de carga: {last_record['last']['info']['load_time']}")
-        print(f"    Fuente: {last_record['last']['info']['source']}")
-        print(f"    Frecuencia de recolección: {last_record['last']['info']['collection_frequency']}")
-        print(f"    Estado: {last_record['last']['info']['state_name']}")
-        print(f"    Producto: {last_record['last']['info']['commodity']}")
-        print(f"    Unidad de medida: {last_record['last']['info']['unit_of_measurement']}")
-        print(f"    Valor: {last_record['last']['info']['value']}")
-
-        print(f"  Tamaño del registro: {last_record['size']}")
+    
+    print(result)
 
 
 
@@ -221,16 +192,7 @@ def print_req_6(control):
     end_date = input("Ingrese la fecha de fin (formato YYYY-MM-DD): ")
     result = lg.req_6(control, state_name, start_date, end_date)
 
-    print("\n--- Resultado del Requerimiento 6 ---\n")
-    print(f"Estado: {state_name}")
-    print(f"Fecha de inicio: {start_date}")
-    print(f"Fecha de fin: {end_date}")
-    print(f"Tiempo de ejecución (ms): {result['execution_time_ms']:.2f}")
-    print(f"Total de registros: {result['total_records']}")
-    print(f"Cantidad de encuestas: {result['survey_count']}")
-    print(f"Cantidad de censos: {result['census_count']}")
-
-    print("\n--- Fin del resultado ---\n")
+    print(result)
 
 def print_req_7(control):
     """
@@ -239,36 +201,10 @@ def print_req_7(control):
     state_name = input("Ingrese el nombre del estado: ")
     start_date = input("Ingrese el año de inicio: ")
     end_date = input("Ingrese el año de fin: ")
+    orden = input("Ingrese el tipo de ordenamiento (ASCENDENTE o DESCENDENTE): ").strip().upper()
 
-    result = lg.req_7(control, state_name, start_date, end_date)
-
-    if not result:
-        print("No se encontraron registros para los parámetros proporcionados.")
-        return
-
-    print(f"Tiempo de ejecución: {result['execution_time_ms']} ms")
-    print(f"Total de registros: {result['total_records']}")
-
-    print("\nInformación del ingreso máximo:")
-    max_income = result['max_income_info']
-    print(f"  - Año de recolección: {max_income['year_of_collection']}")
-    print(f"  - Valor del ingreso: {max_income['income_value']}")
-    print(f"  - Cantidad de registros: {max_income['records_count']}")
-    print(f"  - Cantidad inválida: {max_income['invalid_count']}")
-    print(f"  - Encuestas: {max_income['survey_count']}")
-    print(f"  - Censos: {max_income['census_count']}")
-    print(f"  - Tipo de período: {max_income['period_type']}")
-
-    print("\nInformación del ingreso mínimo:")
-    min_income = result['min_income_info']
-    print(f"  - Año de recolección: {min_income['year_of_collection']}")
-    print(f"  - Valor del ingreso: {min_income['income_value']}")
-    print(f"  - Cantidad de registros: {min_income['records_count']}")
-    print(f"  - Cantidad inválida: {min_income['invalid_count']}")
-    print(f"  - Encuestas: {min_income['survey_count']}")
-    print(f"  - Censos: {min_income['census_count']}")
-    print(f"  - Tipo de período: {min_income['period_type']}")
-
+    result = lg.req_7(control, state_name, start_date, end_date, orden)
+    print(result)
 
 
 def print_req_8(control):
